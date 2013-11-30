@@ -48,6 +48,7 @@ my $show_downgrades = 0;
 my $show_revisions = 0;
 my $show_progress = 1;
 my $show_progress_percent = 0;
+my $progress_spin_id = 1;
 my $conf_file = '/etc/sbo_updates.conf';
 
 Getopt::Std::getopts('c:lv:drpqh', \%opts)  or  HELP_MESSAGE;
@@ -121,21 +122,20 @@ if (stat($conf_file)) {
 
 my @installed_pkgs;
 
-say "Getting installed package list..."  if ($verbose >= 0);
 opendir(my $dh, $PACKAGE_INFORMATION)  or  die "Couldn't open ${PACKAGE_INFORMATION}: $!\n";
 while(readdir $dh) {
+	show_progress('Getting installed package list...', 0, 0, 0)  if ($verbose >= 0);
+
 	if ( -f "${PACKAGE_INFORMATION}/$_"  &&  m/${REPO_TAG}$/ ) {
 		push @installed_pkgs, $_;
 	}
 }
 closedir $dh;
-
-my $installed_pkgs_num = $#installed_pkgs + 1  if ( $show_progress );
+say "\rGetting installed package list - done."  if ($verbose >= 0);
 
 
 my %repo_pkgs;
 
-say "Getting repository package list..."  if ($verbose >= 0);
 my $depth_pre = $REPOSITORY =~ tr,/,,;
 find(	{	wanted => sub {
 				my $depth = tr,/,,;
@@ -160,6 +160,8 @@ find(	{	wanted => sub {
 				# are any setups where 2 is not valid.
 				return if (($depth - $depth_pre) != 2);
 
+				show_progress('Getting repository package list...', 0, 0, 0)  if ($verbose >= 0);
+
 				s,^.*/([^/]+)/([^/]+)$,$1/$2,;
 				(my $category, my $name) = split(/\//);
 
@@ -173,12 +175,10 @@ find(	{	wanted => sub {
 	},
 	$REPOSITORY
 );
-
-my $repo_pkgs_num = keys(%repo_pkgs) + 1  if ( $show_progress );
+say "\rGetting repository package list - done."  if ($verbose >= 0);
 
 
 my $progress_pkg = 0;
-my $progress_spin_id = 1;
 my $package_signature_regex = qr/^(.*)-([^-]+)-[^-]+-([0-9])+${REPO_TAG}$/;
 my %installed_pkg;
 my @pkg_list;	# list of differing packages
@@ -304,9 +304,12 @@ foreach (@installed_pkgs) {
 		push @pkg_list, \%pkg_to_list  if ($gen_list);
 	}
 
-	show_progress  if ($show_progress);
+	show_progress('Checking packages:',
+		$progress_pkg, $#installed_pkgs + 1,
+		$show_progress_percent)
+	if ($show_progress);
 }
-print "\n"  if ($show_progress);
+say "\rChecking packages(" . ($#installed_pkgs + 1) . ") - done."  if ($show_progress);
 print "\n";
 
 
@@ -356,21 +359,26 @@ exit(0);
 
 sub show_progress
 {
+	my	$descr = shift;
+	my	$pos = shift;
+	my	$max = shift;
+	my	$percent = shift;
+
 	my	@PROGRESS_SPINNER = ( '-', '\\', '|', '/' );
+
 	local	$| = 1;
 
 
-	print "Checking packages: ${progress_pkg}/${installed_pkgs_num}";
-	print " " . int($progress_pkg * 100 / $installed_pkgs_num) . "%"  if ($show_progress_percent);
-	print " " . $PROGRESS_SPINNER[$progress_spin_id]  if ($show_progress_percent);
+	print "${descr}";
+	print " ${pos}/${max}"  if ($max > 0);
+	print " " . int($pos * 100 / $max) . "%"  if ($percent);
+	print " " . $PROGRESS_SPINNER[$progress_spin_id];
 	print "\r";
 
-	if ($show_progress_percent) {
-		if ($progress_spin_id >= 3) {
-			$progress_spin_id = 0;
-		} else {
-			$progress_spin_id++;
-		}
+	if ($progress_spin_id >= 3) {
+		$progress_spin_id = 0;
+	} else {
+		$progress_spin_id++;
 	}
 }
 
