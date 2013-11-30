@@ -69,7 +69,10 @@ if (defined($opts{q})) {
 	$show_progress = 0;
 	$verbose = -1;
 }
-(defined($opts{h}))  and  HELP_MESSAGE;
+if (defined($opts{h})) {
+	VERSION_MESSAGE;
+	HELP_MESSAGE;
+}
 if (defined($opts{c})) {
 	$conf_file = $opts{c};
 
