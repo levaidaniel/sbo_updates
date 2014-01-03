@@ -51,7 +51,7 @@ my $show_progress_percent = 0;
 my $progress_spin_id = 1;
 my $conf_file = '/etc/sbo_updates.conf';
 
-Getopt::Std::getopts('c:lv:drpqh', \%opts)  or  HELP_MESSAGE;
+Getopt::Std::getopts('c:lv:drpqhR:P:', \%opts)  or  HELP_MESSAGE;
 
 (defined($opts{l}))  and  $gen_list = 0;
 if (defined($opts{v})) {
@@ -120,6 +120,14 @@ if (stat($conf_file)) {
 		}
 	}
 	close(CONF);
+}
+
+# Override the configuration file variables with the command arguments
+if (defined($opts{R})) {
+	$REPOSITORY = $opts{R};
+}
+if (defined($opts{P})) {
+	$PACKAGE_INFORMATION = $opts{P};
 }
 
 
