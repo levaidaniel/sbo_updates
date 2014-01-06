@@ -133,21 +133,22 @@ if (defined($opts{P})) {
 
 my @installed_pkgs;
 
+my $pos = 0;
 opendir(my $dh, $PACKAGE_INFORMATION)  or  die "Couldn't open ${PACKAGE_INFORMATION}: $!\n";
 while(readdir $dh) {
-	show_progress('Getting installed package list...', 0, 0, 0)  if ($verbose >= 0);
-
 	if ( -f "${PACKAGE_INFORMATION}/$_"  &&  m/${REPO_TAG}$/ ) {
+		show_progress('Getting list of installed packages with repoitory tag...', $pos++, 0, 5, 0)  if ($verbose >= 0);
 		push @installed_pkgs, $_;
 	}
 }
 closedir $dh;
-say "\rGetting installed package list - done."  if ($verbose >= 0);
+say "\rGetting list of installed packages with repoitory tag - done(${pos})."  if ($verbose >= 0);
 
 
 my %repo_pkgs;
 
 my $depth_pre = $REPOSITORY =~ tr,/,,;
+$pos = 0;
 find(	{	wanted => sub {
 				my $depth = tr,/,,;
 
@@ -171,7 +172,7 @@ find(	{	wanted => sub {
 				# are any setups where 2 is not valid.
 				return if (($depth - $depth_pre) != 2);
 
-				show_progress('Getting repository package list...', 0, 0, 0)  if ($verbose >= 0);
+				show_progress('Getting repository package list...', $pos++, 0, 10, 0)  if ($verbose >= 0);
 
 				s,^.*/([^/]+)/([^/]+)$,$1/$2,;
 				(my $category, my $name) = split(/\//);
@@ -186,7 +187,7 @@ find(	{	wanted => sub {
 	},
 	$REPOSITORY
 );
-say "\rGetting repository package list - done."  if ($verbose >= 0);
+say "\rGetting repository package list - done(${pos})."  if ($verbose >= 0);
 
 
 my $progress_pkg = 0;
@@ -316,7 +317,7 @@ foreach (@installed_pkgs) {
 	}
 
 	show_progress('Checking packages:',
-		$progress_pkg, $#installed_pkgs + 1,
+		$progress_pkg, $#installed_pkgs + 1, 2,
 		$show_progress_percent)
 	if ($show_progress);
 }
@@ -373,6 +374,7 @@ sub show_progress
 	my	$descr = shift;
 	my	$pos = shift;
 	my	$max = shift;
+	my	$advance = shift;
 	my	$percent = shift;
 
 	my	@PROGRESS_SPINNER = ( '-', '\\', '|', '/' );
@@ -386,10 +388,13 @@ sub show_progress
 	print " " . $PROGRESS_SPINNER[$progress_spin_id];
 	print "\r";
 
-	if ($progress_spin_id >= 3) {
-		$progress_spin_id = 0;
-	} else {
-		$progress_spin_id++;
+	# only update the spinner with every $advance step
+	if ($pos % $advance eq 0) {
+		if ($progress_spin_id >= 3) {
+			$progress_spin_id = 0;
+		} else {
+			$progress_spin_id++;
+		}
 	}
 }
 
