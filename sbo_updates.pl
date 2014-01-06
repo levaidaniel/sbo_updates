@@ -130,6 +130,10 @@ if (defined($opts{P})) {
 	$PACKAGE_INFORMATION = $opts{P};
 }
 
+# strip trailing slashes, because perl can not open the directories if they are present.
+$REPOSITORY =~ s,/$,,;
+$PACKAGE_INFORMATION =~ s,/$,,;
+
 
 my @installed_pkgs;
 
