@@ -176,7 +176,7 @@ find(	{	wanted => sub {
 				# are any setups where 2 is not valid.
 				return if (($depth - $depth_pre) != 2);
 
-				show_progress('Getting repository package list...', $pos++, 0, 10, 0)  if ($verbose >= 0);
+				show_progress('Getting repository package list...', $pos++, 0, 100, 0)  if ($verbose >= 0);
 
 				s,^.*/([^/]+)/([^/]+)$,$1/$2,;
 				(my $category, my $name) = split(/\//);
@@ -321,7 +321,7 @@ foreach (@installed_pkgs) {
 	}
 
 	show_progress('Checking packages:',
-		$progress_pkg, $#installed_pkgs + 1, 2,
+		$progress_pkg, $#installed_pkgs + 1, 5,
 		$show_progress_percent)
 	if ($show_progress);
 }
