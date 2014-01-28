@@ -235,6 +235,9 @@ foreach (@installed_pkgs) {
 	}
 
 
+	$repo_pkgs{$repo_pkg}{name} = $repo_pkg;
+
+
 	open(INFO_FILE, "<", $info[0])  or  say STDERR "Couldn't open info file (" . $info[0] . "): $!";
 	( $repo_pkgs{$repo_pkg}{version} ) = grep(/^VERSION/, <INFO_FILE>);
 	chomp($repo_pkgs{$repo_pkg}{version});
@@ -249,6 +252,9 @@ foreach (@installed_pkgs) {
 	( undef, $repo_pkgs{$repo_pkg}{revision} ) = split(/=/, $repo_pkgs{$repo_pkg}{revision});
 	$repo_pkgs{$repo_pkg}{revision} =~ s,^\${BUILD:-([0-9])}$,$1,;
 	close(SLACKBUILD_FILE);
+
+
+	quirks($repo_pkgs{$repo_pkg});
 
 
 	# Try to handle the version string manually if the 'version' module can not.
@@ -410,6 +416,7 @@ sub quirks
 	if (defined($QUIRKS{$_[0]->{name}})) {
 		say "\tusing quirk for package version"  if ($verbose >= 1);
 		say "\tquirk: " . $QUIRKS{$_[0]->{name}}  if ($verbose >= 2);
+		say "\toriginal version: " . $_[0]->{version}  if ($verbose >= 2);
 		foreach ($_[0]->{version}) {
 			eval($QUIRKS{$_[0]->{name}});
 		}
