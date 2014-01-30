@@ -436,8 +436,10 @@ sub VERSION_MESSAGE
 sub HELP_MESSAGE
 {
 	say "Usage:";
-	say "$0 [-c] [-l] [-d] [-r] [-v] [-p] [-q]";
+	say "$0 [-c] [-R] [-P] [-l] [-d] [-r] [-v] [-p] [-q]";
 	say "\t-c : Configuration file. The default is $conf_file";
+	say "\t-R : Override the package repository directory.";
+	say "\t-P : Override the installed packages directory.";
 	say "\t-l : Don't show one-line package list at the end.";
 	say "\t-d : Show downgrades too.";
 	say "\t-r : Compare revisions too.";
