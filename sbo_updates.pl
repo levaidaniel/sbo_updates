@@ -141,13 +141,19 @@ my $pos = 0;
 opendir(my $dh, $PACKAGE_INFORMATION)  or  die "Couldn't open ${PACKAGE_INFORMATION}: $!\n";
 while(readdir $dh) {
 	if ( -f "${PACKAGE_INFORMATION}/$_"  &&  m/${REPO_TAG}$/ ) {
-		show_progress('Getting list of installed packages with repoitory tag...', $pos++, 0, 5)
+		show_progress('Getting list of installed packages with repository tag...', $pos++, 0, 5)
 			if ($verbose >= 0);
 		push @installed_pkgs, $_;
 	}
 }
 closedir $dh;
-say "\rGetting list of installed packages with repoitory tag - done(${pos})."  if ($verbose >= 0);
+
+if (@installed_pkgs) {
+	say "\rGetting list of installed packages with repository tag - done(${pos})."  if ($verbose >= 0);
+} else {
+	say "There were no installed packages in the specified package information directory!";
+	exit(1);
+}
 
 
 my %repo_pkgs;
@@ -193,7 +199,13 @@ find(	{	wanted => sub {
 	},
 	$REPOSITORY
 );
-say "\rGetting repository package list - done(${pos})."  if ($verbose >= 0);
+
+if (keys(%repo_pkgs)) {
+	say "\rGetting repository package list - done(${pos})."  if ($verbose >= 0);
+} else {
+	say "There were no packages in the specified repository!";
+	exit(1);
+}
 
 
 my $progress_pkg = 0;
