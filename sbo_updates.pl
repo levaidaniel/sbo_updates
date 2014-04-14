@@ -177,7 +177,7 @@ find(	{	wanted => sub {
 				# are any setups where 2 is not valid.
 				return if (($depth - $depth_pre) != 2);
 
-				show_progress('Getting installed package list...', $pos++, 0, 100)
+				show_progress('Getting repository package list...', $pos++, 0, 100)
 					if ($verbose >= 0);
 
 				s,^.*/([^/]+)/([^/]+)$,$1/$2,;
@@ -193,13 +193,7 @@ find(	{	wanted => sub {
 	},
 	$REPOSITORY
 );
-
-if (@installed_pkgs) {
-	say "\rGetting installed package list - done(${pos})."  if ($verbose >= 0);
-} else {
-	say "\n\nThere were no installed packages in the specified package information directory!";
-	exit(1);
-}
+say "\rGetting repository package list - done(${pos})."  if ($verbose >= 0);
 
 
 my $progress_pkg = 0;
@@ -380,9 +374,6 @@ if (@pkg_list) {
 	} else {
 		exit(2);
 	}
-} else {
-	say "There were no packages in the specified repository!";
-	exit(1);
 }
 
 exit(0);
