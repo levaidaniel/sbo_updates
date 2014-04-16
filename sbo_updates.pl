@@ -86,6 +86,7 @@ if (defined($opts{c})) {
 my $PACKAGE_INFORMATION = '/var/log/packages';
 my $REPO_TAG = '_SBo';
 my $REPOSITORY = '/usr/slackbuilds/git';
+my $MYSTUFF = '';
 my @IGNORE_PACKAGES;
 my %QUIRKS;
 # If the default configuration file is not present, that is not an error,
@@ -100,10 +101,8 @@ if (stat($conf_file)) {
 
 		if (m/^PACKAGE_INFORMATION=/) {
 			( undef, $PACKAGE_INFORMATION ) = split /=/;
-			$PACKAGE_INFORMATION =~ s,/$,,g;
 		} elsif (m/^REPOSITORY=/) {
 			( undef, $REPOSITORY ) = split /=/;
-			$REPOSITORY =~ s,/$,,g;
 		} elsif (m/^REPO_TAG=/) {
 			( undef, $REPO_TAG ) = split /=/;
 		} elsif (m/^IGNORE_PACKAGES=/) {
@@ -117,6 +116,8 @@ if (stat($conf_file)) {
 				( my $qpkg, my $qsubs ) = split /,/;
 				$QUIRKS{$qpkg} = $qsubs;
 			}
+		} elsif (m/^MYSTUFF=/) {
+			( undef, $MYSTUFF ) = split /=/;
 		}
 	}
 	close(CONF);
@@ -131,8 +132,9 @@ if (defined($opts{P})) {
 }
 
 # strip trailing slashes, because perl can not open the directories if they are present.
-$REPOSITORY =~ s,/$,,;
-$PACKAGE_INFORMATION =~ s,/$,,;
+$REPOSITORY =~ s,/*$,,;
+$PACKAGE_INFORMATION =~ s,/*$,,;
+$MYSTUFF =~ s,/*$,,g; $MYSTUFF =~ s,^/*,,;
 
 
 my @installed_pkgs;
@@ -165,7 +167,10 @@ find(	{	wanted => sub {
 
 				die "Couldn't open ${REPOSITORY}: $!\n"  if (! -d "$_"  &&  $depth == $depth_pre);
 
-				return if (! -d "$_"  ||  m/\/*\.git(\/.*)*$/);
+				return if (! -d "$_"  ||  m/\/\.git(\/.*)*$/);
+
+				# Ignore the user's own playground, but allow to specify it directly as a repository
+				return if (length($MYSTUFF)  &&  m/\/$MYSTUFF(\/.*)*$/  &&  $REPOSITORY !~ m/\/$MYSTUFF$/);
 
 				# The magic number 2 here is the difference in
 				# depth, between the pkg. repo's root path, and
