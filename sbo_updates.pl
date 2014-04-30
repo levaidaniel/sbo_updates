@@ -348,7 +348,7 @@ foreach (@installed_pkgs) {
 	show_progress('Checking packages:', $progress_pkg, $#installed_pkgs + 1, 5)
 		if ($show_progress);
 }
-say "\rChecking packages(" . ($#installed_pkgs + 1) . ") - done.  "  if ($show_progress);
+say "\rChecking packages - done(" . ($#installed_pkgs + 1) . ").   "  if ($show_progress);
 print "\n";
 
 
