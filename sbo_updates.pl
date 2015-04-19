@@ -461,7 +461,6 @@ sub HELP_MESSAGE
 	say "\t-d : Show downgrades too.";
 	say "\t-r : Compare revisions too.";
 	say "\t-v number : Verbose list - Print more information about what is being done. 'number' can be 1 or 2 depending on how much verbosity is needed.";
-	say "\t-p : Show percentage in progress bar.";
 	say "\t-q : Don't print anything, just return 2 if there would have been output.";
 
 	exit(1);
