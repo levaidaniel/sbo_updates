@@ -458,8 +458,8 @@ sub HELP_MESSAGE
 	say "\t-R : Override the package repository directory.";
 	say "\t-P : Override the installed packages directory.";
 	say "\t-l : Don't show one-line package list at the end.";
-	say "\t-d : Show downgrades too.";
-	say "\t-r : Compare revisions too.";
+	say "\t-d : Show downgrades.";
+	say "\t-r : Compare revisions.";
 	say "\t-v number : Verbose list - Print more information about what is being done. 'number' can be 1 or 2 depending on how much verbosity is needed.";
 	say "\t-q : Don't print anything, just return 2 if there would have been output.";
 
