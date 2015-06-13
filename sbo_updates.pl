@@ -276,15 +276,17 @@ foreach (@installed_pkgs) {
 
 	# Try to handle the version string manually if the 'version' module can not.
 	if (!is_lax($installed_pkg{version})) {
-		say "\tnon lax format:" . $installed_pkg{version}  if ($verbose >= 2);
+		say "\tnon lax format (installed):" . $installed_pkg{version}  if ($verbose >= 2);
 
 		$installed_pkg{version} =~ s/[^0-9_\.]//g;
 		$installed_pkg{version} =~ tr/_//s;
 
-		# If 'version' still can not parse it, be more radical
 		if (!is_lax($installed_pkg{version})) {
+			# If 'version' still can not parse it, be more radical
 			$installed_pkg{version} =~ tr/_/./;
 			$installed_pkg{version} =~ s/[^0-9\.]//g;
+			$installed_pkg{version} =~ tr/.//s;
+			$installed_pkg{version} =~ s/\.$//;
 		}
 
 		say "\tnew version number :" . $installed_pkg{version}  if ($verbose >= 2);
@@ -295,15 +297,17 @@ foreach (@installed_pkgs) {
 		}
 	}
 	if (!is_lax($repo_pkgs{$repo_pkg}{version})) {
-		say "\tnon lax format:" . $repo_pkgs{$repo_pkg}{version}  if ($verbose >= 2);
+		say "\tnon lax format (repository):" . $repo_pkgs{$repo_pkg}{version}  if ($verbose >= 2);
 
 		$repo_pkgs{$repo_pkg}{version} =~ s/[^0-9_\.]//g;
 		$repo_pkgs{$repo_pkg}{version} =~ tr/_//s;
 
-		# If 'version' still can not parse it, be more radical
 		if (!is_lax($repo_pkgs{$repo_pkg}{version})) {
+			# If 'version' still can not parse it, be more radical
 			$repo_pkgs{$repo_pkg}{version} =~ tr/_/./;
 			$repo_pkgs{$repo_pkg}{version} =~ s/[^0-9\.]//g;
+			$repo_pkgs{$repo_pkg}{version} =~ tr/.//s;
+			$repo_pkgs{$repo_pkg}{version} =~ s/\.$//;
 		}
 
 		say "\tnew version number :" . $repo_pkgs{$repo_pkg}{version}  if ($verbose >= 2);
