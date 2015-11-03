@@ -267,7 +267,7 @@ foreach (@installed_pkgs) {
 	( $repo_pkgs{$repo_pkg}{revision} ) = grep(/^BUILD/, <SLACKBUILD_FILE>);
 	chomp($repo_pkgs{$repo_pkg}{revision});
 	( undef, $repo_pkgs{$repo_pkg}{revision} ) = split(/=/, $repo_pkgs{$repo_pkg}{revision});
-	$repo_pkgs{$repo_pkg}{revision} =~ s,^\${BUILD:-([0-9])}$,$1,;
+	$repo_pkgs{$repo_pkg}{revision} =~ s,^\$\{BUILD:-([0-9])\}$,$1,;
 	close(SLACKBUILD_FILE);
 
 
@@ -319,8 +319,8 @@ foreach (@installed_pkgs) {
 	}
 
 
-	$installed_pkg{version_obj} = version->declare(version->parse($installed_pkg{version}));
-	$repo_pkgs{$repo_pkg}{version_obj} = version->declare(version->parse($repo_pkgs{$repo_pkg}{version}));
+	$installed_pkg{version_obj} = version->parse($installed_pkg{version});
+	$repo_pkgs{$repo_pkg}{version_obj} = version->parse($repo_pkgs{$repo_pkg}{version});
 
 	if ($verbose >= 2) {
 		say $installed_pkg{version} . " => " . $installed_pkg{version_obj}->normal;
