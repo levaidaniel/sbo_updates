@@ -323,8 +323,38 @@ foreach (@installed_pkgs) {
 	$repo_pkgs{$repo_pkg}{version_obj} = version->parse($repo_pkgs{$repo_pkg}{version});
 
 	if ($verbose >= 2) {
-		say $installed_pkg{version} . " => " . $installed_pkg{version_obj}->normal;
-		say $repo_pkgs{$repo_pkg}{version} . " => " . $repo_pkgs{$repo_pkg}{version_obj}->normal;
+		say $installed_pkg{version} . "->normal = " . $installed_pkg{version_obj}->normal;
+		say $repo_pkgs{$repo_pkg}{version} . "->normal = " . $repo_pkgs{$repo_pkg}{version_obj}->normal;
+
+		if ($installed_pkg{version_obj} == $repo_pkgs{$repo_pkg}{version_obj}) {
+			say "$installed_pkg{version_obj} == $repo_pkgs{$repo_pkg}{version_obj}";
+		}
+		if ($installed_pkg{version_obj} < $repo_pkgs{$repo_pkg}{version_obj}) {
+			say "$installed_pkg{version_obj} < $repo_pkgs{$repo_pkg}{version_obj}";
+		}
+		if ($installed_pkg{version_obj} > $repo_pkgs{$repo_pkg}{version_obj}) {
+			say "$installed_pkg{version_obj} > $repo_pkgs{$repo_pkg}{version_obj}";
+		}
+
+		if ($installed_pkg{version_obj}->numify eq $repo_pkgs{$repo_pkg}{version_obj}->numify) {
+			say "$installed_pkg{version_obj}->numify eq $repo_pkgs{$repo_pkg}{version_obj}->numify";
+		}
+		if ($installed_pkg{version_obj}->numify lt $repo_pkgs{$repo_pkg}{version_obj}->numify) {
+			say "$installed_pkg{version_obj}->numify lt $repo_pkgs{$repo_pkg}{version_obj}->numify";
+		}
+		if ($installed_pkg{version_obj}->numify gt $repo_pkgs{$repo_pkg}{version_obj}->numify) {
+			say "$installed_pkg{version_obj}->numify gt $repo_pkgs{$repo_pkg}{version_obj}->numify";
+		}
+
+		if ($installed_pkg{version_obj}->normal eq $repo_pkgs{$repo_pkg}{version_obj}->normal) {
+			say "$installed_pkg{version_obj}->normal eq $repo_pkgs{$repo_pkg}{version_obj}->normal";
+		}
+		if ($installed_pkg{version_obj}->normal lt $repo_pkgs{$repo_pkg}{version_obj}->normal) {
+			say "$installed_pkg{version_obj}->normal lt $repo_pkgs{$repo_pkg}{version_obj}->normal";
+		}
+		if ($installed_pkg{version_obj}->normal gt $repo_pkgs{$repo_pkg}{version_obj}->normal) {
+			say "$installed_pkg{version_obj}->normal gt $repo_pkgs{$repo_pkg}{version_obj}->normal";
+		}
 	}
 
 	my %pkg_to_list;
