@@ -338,7 +338,7 @@ foreach (@installed_pkgs) {
 			$pkg_to_list{installed_version} = $installed_pkg{version} . "-" . $installed_pkg{revision};
 			$pkg_to_list{repo_version} = $repo_pkgs{$repo_pkg}{version} . "-" . $repo_pkgs{$repo_pkg}{revision};
 
-			push @pkg_list, \%pkg_to_list  if ($gen_list);
+			push @pkg_list, \%pkg_to_list;
 		}
 	} else {
 		$pkg_to_list{name} = $installed_pkg{name};
@@ -346,7 +346,7 @@ foreach (@installed_pkgs) {
 		$pkg_to_list{installed_version} = $installed_pkg{version} . "-" . $installed_pkg{revision};
 		$pkg_to_list{repo_version} = $repo_pkgs{$repo_pkg}{version} . "-" . $repo_pkgs{$repo_pkg}{revision};
 
-		push @pkg_list, \%pkg_to_list  if ($gen_list);
+		push @pkg_list, \%pkg_to_list;
 	}
 
 	show_progress('Checking packages:', $progress_pkg, $#installed_pkgs + 1, 5)
@@ -378,19 +378,21 @@ if (@pkg_list) {
 				push @upgrades, $_->{name};
 			}
 		}
-		if (@upgrades) {
-			say "\nUpgrades:";
-			foreach (@upgrades) {
-				print $_ . " ";
+		if ($gen_list) {
+			if (@upgrades) {
+				say "\nUpgrades:";
+				foreach (@upgrades) {
+					print $_ . " ";
+				}
+				print "\n";
 			}
-			print "\n";
-		}
-		if ($show_downgrades  and  @downgrades) {
-			say "\nDowngrades:";
-			foreach (@downgrades) {
-				print $_ . " ";
+			if ($show_downgrades  and  @downgrades) {
+				say "\nDowngrades:";
+				foreach (@downgrades) {
+					print $_ . " ";
+				}
+				print "\n";
 			}
-			print "\n";
 		}
 	} else {
 		exit(2);
