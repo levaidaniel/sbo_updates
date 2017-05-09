@@ -198,6 +198,7 @@ find(	{	wanted => sub {
 					say STDERR "Duplicate package in repository: '${name}'!";
 				}
 				$repo_pkgs{$name} = { category => $category, version => undef, revision => undef };
+				say "Adding ${category}/${name} to repository package list."  if ($verbose >= 2);
 			},
 		no_chdir => 1,
 	},
