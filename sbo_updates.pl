@@ -200,7 +200,6 @@ find(	{	wanted => sub {
 				$repo_pkgs{$name} = { category => $category, version => undef, revision => undef };
 			},
 		no_chdir => 1,
-		follow => 1,
 	},
 	$REPOSITORY
 );
